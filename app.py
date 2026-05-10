@@ -2,90 +2,97 @@ from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 
-# Sample User
-user = {
-    "name": "Vaishnavi",
-    "bio": "Python Developer"
-}
-
-# Posts Data
-posts = [
+projects = [
     {
         "id": 1,
-        "content": "Welcome to my social media app!",
-        "likes": 0,
-        "comments": []
+        "name": "Website Project",
+        "tasks": [
+            {
+                "title": "Design Homepage",
+                "assigned_to": "Vaishnavi",
+                "comments": ["Complete navbar first"]
+            }
+        ]
     }
 ]
-
-followers = 10
 
 # Home Page
 @app.route('/')
 def home():
     return render_template(
         'index.html',
-        posts=posts,
-        followers=followers
+        projects=projects
     )
 
-# Profile Page
-@app.route('/profile')
-def profile():
-    return render_template(
-        'profile.html',
-        user=user
-    )
+# Login Page
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
-# Create Post
-@app.route('/create_post', methods=['GET', 'POST'])
-def create_post():
+# Create Project
+@app.route('/create_project', methods=['GET', 'POST'])
+def create_project():
 
     if request.method == 'POST':
 
-        content = request.form['content']
+        project_name = request.form['project_name']
 
-        new_post = {
-            "id": len(posts) + 1,
-            "content": content,
-            "likes": 0,
-            "comments": []
+        new_project = {
+            "id": len(projects) + 1,
+            "name": project_name,
+            "tasks": []
         }
 
-        posts.append(new_post)
+        projects.append(new_project)
 
         return redirect('/')
 
-    return render_template('create_post.html')
+    return render_template('create_project.html')
 
-# Like Post
-@app.route('/like/<int:id>')
-def like(id):
+# Project Details
+@app.route('/project/<int:id>')
+def project(id):
 
-    for post in posts:
-        if post["id"] == id:
-            post["likes"] += 1
+    selected_project = None
 
-    return redirect('/')
+    for project in projects:
+        if project["id"] == id:
+            selected_project = project
 
-# Add Comment
-@app.route('/comment/<int:id>', methods=['POST'])
-def comment(id):
-
-    comment_text = request.form['comment']
-
-    for post in posts:
-        if post["id"] == id:
-            post["comments"].append(comment_text)
-
-    return redirect('/')
-
-# Followers Page
-@app.route('/followers')
-def follower_page():
     return render_template(
-        'followers.html',
-        followers=followers
+        'project.html',
+        project=selected_project
+    )
+
+# Create Task
+@app.route('/create_task/<int:id>', methods=['GET', 'POST'])
+def create_task(id):
+
+    selected_project = None
+
+    for project in projects:
+        if project["id"] == id:
+            selected_project = project
+
+    if request.method == 'POST':
+
+        title = request.form['title']
+        assigned_to = request.form['assigned_to']
+        comment = request.form['comment']
+
+        task = {
+            "title": title,
+            "assigned_to": assigned_to,
+            "comments": [comment]
+        }
+
+        selected_project["tasks"].append(task)
+
+        return redirect(f'/project/{id}')
+
+    return render_template(
+        'create_task.html',
+        project=selected_project
     )
 
 if __name__ == '__main__':
