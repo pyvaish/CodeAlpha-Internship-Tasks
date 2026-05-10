@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple E-commerce Store</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <h1>CodeAlpha Store</h1>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/cart">Cart</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h2>Welcome to Our Store</h2>
+        <p>Buy Amazing Products at Best Prices</p>
+    </div>
+
+    <div class="products">
+
+        {% for product in products %}
+
+        <div class="card">
+
+            <img src="{{ product.image }}" alt="Product Image">
+
+            <h2>{{ product.name }}</h2>
+
+            <p>₹{{ product.price }}</p>
+
+            <a class="btn"
+               href="/product/{{ product.id }}">
+               View Details
+            </a>
+
+            <a class="btn cart-btn"
+               href="/add_to_cart/{{ product.id }}">
+               Add To Cart
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</body>
+</html>

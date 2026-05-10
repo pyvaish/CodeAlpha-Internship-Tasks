@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Product Details</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <h1>Product Details</h1>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/cart">Cart</a>
+        </div>
+    </nav>
+
+    <div class="product-page">
+
+        <img src="{{ product.image }}" alt="Image">
+
+        <div class="product-info">
+
+            <h1>{{ product.name }}</h1>
+
+            <h2>Price: ₹{{ product.price }}</h2>
+
+            <p>
+                This is a high quality product available
+                in our e-commerce store.
+            </p>
+
+            <a class="btn"
+               href="/add_to_cart/{{ product.id }}">
+               Add To Cart
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

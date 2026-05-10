@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Shopping Cart</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <h1>Your Cart</h1>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+        </div>
+    </nav>
+
+    <div class="cart-container">
+
+        {% if cart %}
+
+            {% for item in cart %}
+
+            <div class="cart-item">
+
+                <h2>{{ item.name }}</h2>
+
+                <p>Price: ₹{{ item.price }}</p>
+
+            </div>
+
+            {% endfor %}
+
+            <h2>Total: ₹{{ total }}</h2>
+
+            <a class="btn" href="/order">
+                Place Order
+            </a>
+
+        {% else %}
+
+            <h2>Your cart is empty</h2>
+
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
