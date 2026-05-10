@@ -1,1 +1,1 @@
-console.log("E-commerce Website Loaded Successfully");
+console.log("Social Media App Loaded");

@@ -1,104 +1,92 @@
-from flask import Flask, render_template, redirect, session
+from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
-app.secret_key = "codealpha"
 
-# Product Data
-products = [
+# Sample User
+user = {
+    "name": "Vaishnavi",
+    "bio": "Python Developer"
+}
+
+# Posts Data
+posts = [
     {
         "id": 1,
-        "name": "Laptop",
-        "price": 55000,
-        "image": "https://via.placeholder.com/250"
-    },
-    {
-        "id": 2,
-        "name": "Smartphone",
-        "price": 25000,
-        "image": "https://via.placeholder.com/250"
-    },
-    {
-        "id": 3,
-        "name": "Headphones",
-        "price": 3000,
-        "image": "https://via.placeholder.com/250"
-    },
-    {
-        "id": 4,
-        "name": "Smart Watch",
-        "price": 5000,
-        "image": "https://via.placeholder.com/250"
+        "content": "Welcome to my social media app!",
+        "likes": 0,
+        "comments": []
     }
 ]
+
+followers = 10
 
 # Home Page
 @app.route('/')
 def home():
-    return render_template('index.html', products=products)
-
-# Product Details
-@app.route('/product/<int:id>')
-def product(id):
-    selected_product = None
-
-    for product in products:
-        if product["id"] == id:
-            selected_product = product
-
-    return render_template('product.html', product=selected_product)
-
-# Add To Cart
-@app.route('/add_to_cart/<int:id>')
-def add_to_cart(id):
-
-    if "cart" not in session:
-        session["cart"] = []
-
-    session["cart"].append(id)
-    session.modified = True
-
-    return redirect('/cart')
-
-# Cart Page
-@app.route('/cart')
-def cart():
-
-    cart_products = []
-    total = 0
-
-    if "cart" in session:
-
-        for item_id in session["cart"]:
-
-            for product in products:
-
-                if product["id"] == item_id:
-                    cart_products.append(product)
-                    total += product["price"]
-
     return render_template(
-        'cart.html',
-        cart=cart_products,
-        total=total
+        'index.html',
+        posts=posts,
+        followers=followers
     )
 
-# Order Page
-@app.route('/order')
-def order():
+# Profile Page
+@app.route('/profile')
+def profile():
+    return render_template(
+        'profile.html',
+        user=user
+    )
 
-    session.pop("cart", None)
+# Create Post
+@app.route('/create_post', methods=['GET', 'POST'])
+def create_post():
 
-    return render_template('order.html')
+    if request.method == 'POST':
 
-# Login Page
-@app.route('/login')
-def login():
-    return render_template('login.html')
+        content = request.form['content']
 
-# Register Page
-@app.route('/register')
-def register():
-    return render_template('register.html')
+        new_post = {
+            "id": len(posts) + 1,
+            "content": content,
+            "likes": 0,
+            "comments": []
+        }
+
+        posts.append(new_post)
+
+        return redirect('/')
+
+    return render_template('create_post.html')
+
+# Like Post
+@app.route('/like/<int:id>')
+def like(id):
+
+    for post in posts:
+        if post["id"] == id:
+            post["likes"] += 1
+
+    return redirect('/')
+
+# Add Comment
+@app.route('/comment/<int:id>', methods=['POST'])
+def comment(id):
+
+    comment_text = request.form['comment']
+
+    for post in posts:
+        if post["id"] == id:
+            post["comments"].append(comment_text)
+
+    return redirect('/')
+
+# Followers Page
+@app.route('/followers')
+def follower_page():
+    return render_template(
+        'followers.html',
+        followers=followers
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Simple E-commerce Store</title>
+    <title>Mini Social Media App</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -11,42 +11,55 @@
 <body>
 
     <nav>
-        <h1>CodeAlpha Store</h1>
 
-        <div class="nav-links">
+        <h1>Social Media Platform</h1>
+
+        <div>
             <a href="/">Home</a>
-            <a href="/cart">Cart</a>
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
+            <a href="/profile">Profile</a>
+            <a href="/create_post">Create Post</a>
+            <a href="/followers">Followers</a>
         </div>
+
     </nav>
 
-    <div class="hero">
-        <h2>Welcome to Our Store</h2>
-        <p>Buy Amazing Products at Best Prices</p>
-    </div>
+    <div class="container">
 
-    <div class="products">
+        {% for post in posts %}
 
-        {% for product in products %}
+        <div class="post">
 
-        <div class="card">
+            <h3>Post {{ post.id }}</h3>
 
-            <img src="{{ product.image }}" alt="Product Image">
+            <p>{{ post.content }}</p>
 
-            <h2>{{ product.name }}</h2>
-
-            <p>₹{{ product.price }}</p>
+            <p>Likes: {{ post.likes }}</p>
 
             <a class="btn"
-               href="/product/{{ product.id }}">
-               View Details
+               href="/like/{{ post.id }}">
+               Like
             </a>
 
-            <a class="btn cart-btn"
-               href="/add_to_cart/{{ product.id }}">
-               Add To Cart
-            </a>
+            <h4>Comments</h4>
+
+            {% for comment in post.comments %}
+
+                <p>• {{ comment }}</p>
+
+            {% endfor %}
+
+            <form action="/comment/{{ post.id }}"
+                  method="POST">
+
+                <input type="text"
+                       name="comment"
+                       placeholder="Write comment">
+
+                <button type="submit">
+                    Comment
+                </button>
+
+            </form>
 
         </div>
 
